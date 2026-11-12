@@ -211,3 +211,4 @@ CREATE TABLE Notificacao (
     ),
     CONSTRAINT fk_notificacao_funcionario FOREIGN KEY (id_funcionario) REFERENCES Funcionario (id_funcionario) ON UPDATE CASCADE ON DELETE CASCADE
 );
+COMMIT
