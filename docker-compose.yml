@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: ponto_eletronico_db
+    environment:
+      POSTGRES_USER: ponto
+      POSTGRES_PASSWORD: ponto
+      POSTGRES_DB: ponto_eletronico
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - dados:/var/lib/postgresql/data
+
+volumes:
+  dados:
