@@ -75,7 +75,7 @@ UPDATE Funcionario SET id_gerente = 1 WHERE id_funcionario = 1;
 UPDATE Solicitacao SET status = 'deferida', id_gerente = NULL WHERE id_solic = 1;
 
 
--- ------------------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------
 -- TESTE 08: VERIFICAÇÃO DE DOMÍNIO E FORMADO DE CPF E SEXO
 -- REGRA: O CPF deve ter exatamente 11 dígitos numéricos e o sexo de funcionário só aceita 'M' ou 'F'
 -- RESTRIÇÃO DDL: ck_funcionario_cpf / ck_funcionario_sexo (CHECK em Funcionario)
@@ -86,7 +86,7 @@ UPDATE Solicitacao SET status = 'deferida', id_gerente = NULL WHERE id_solic = 1
 INSERT INTO Funcionario (cpf, nome, sexo, email, data_admissao, id_departamento, id_cargo, id_gerente, status_funcionario) VALUES ('1234567890A', 'Teste CPF invalido', 'M', 'cpf.invalido@empresa.com','2026-10-01', 1,1,2,'ativo');
 
 
--- ------------------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------
 -- TESTE 09: VERIFICAÇÃO DE AUTOGERÊNCIA (ADMIN / GERENTE_RH)
 -- REGRA: Um administrador não pode gerenciar a si mesmo
 -- RESTRIÇÃO DDL: ck_gerencia_rh_auto (CHECK na tabela Gerente_RH)
@@ -96,7 +96,7 @@ INSERT INTO Funcionario (cpf, nome, sexo, email, data_admissao, id_departamento,
 
 INSERT INTO Gerencia_RH (id_admin, id_gerente) VALUES (1,1);
 
--- ------------------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------
 -- TESTE 10: VERIFICAÇÃO DE QUANTIDADE POSITIVA EM HORA EXTRA
 -- REGRA: A quantidade de horas extras deve ser maior que zero
 -- RESTRIÇÃO DDL: ck_hora_extra_quantidade (CHECK na tabela Hora_Extra)
@@ -106,3 +106,46 @@ INSERT INTO Gerencia_RH (id_admin, id_gerente) VALUES (1,1);
 
 INSERT INTO Hora_Extra (quantidade, id_registro) VALUES (0.00, 1);
 
+-- -----------------------------------------------------------------------------------------------------
+-- TESTE 11: VERIFICAÇÃO DE UNICIDADE
+-- REGRA: CPF e E-mail do funcionário devem ser únicos no sistema.
+-- RESTRIÇÃO DDL: uq_funcionario_cpf (UNIQUE na tabela Funcionario)
+-- OPERAÇÃO: INSERT
+-- RESULTADO ESPERADO: O SGBD deve barrar a inserção com erro de chave duplicada
+-- -----------------------------------------------------------------------------------------------------
+
+INSERT INTO Funcionario (cpf, nome, sexo, email, data_admissao, id_departamento, id_cargo, id_gerente, status_funcionario) VALUES ('33333333333', 'Funcionario CPF Duplicado', 'M', 'email.unico@empresa.com', '2026-10-01', 1, 1, 2, 'ativo');
+
+
+-- -----------------------------------------------------------------------------------------------------
+-- TESTE 12: VERIFICAÇÃO DE INTEGRIDADE REFERENCIAL NA INSERÇÃO (FOREIGN KEY)
+-- REGRA: Uma falta só pode ser registrada para um funcionário existente
+-- RESTRIÇÃO DDL: fk_falta_funcionario (FOREIGN KEY na tabela Falta)
+-- OPERAÇÃO: INSERT
+-- RESULTADO ESPERADO: O SGBD deve barrar a inserção por violação de chave estrangeira.
+-- -----------------------------------------------------------------------------------------------------
+
+INSERT INTO Falta (data_falta, status_justificativa, id_funcionario, id_gerente) VALUES ('2026-10-16', 'pendente', 999999, 2);
+
+
+-- -----------------------------------------------------------------------------------------------------
+-- TESTE 13: Verificação de Integridade Referencial na Exclusão 
+-- REGRA: Não é permitido excluir um Departamento que possua funcionários vinculados 
+-- RESTRIÇÃO DDL: fk_funcionario_departamento (FOREIGN KEY na tabela Funcionario)
+-- OPERAÇÃO: DELETE
+-- RESULTADO ESPERADO: O SGBD deve barrar a exclusão por violação de integridade referencial.
+--
+
+DELETE FROM Departamento WHERE id_departamento = 1;
+
+
+-- -----------------------------------------------------------------------------------------------------
+-- TESTE 14: Verificação de Comportamento Válido (Caso de Sucesso e Limpeza)
+-- REGRA: Demonstra que operações emm conformidade com as regras de integridade são aceitas normalmente   --        pelo SGBD
+-- OPERAÇÃO: INSERT seguido de DELETE
+-- RESULTADO ESPERADO: Ambas as operações devem ser concluídas com sucesso.
+-- -----------------------------------------------------------------------------------------------------
+
+INSERT INTO Departamento (nome_departamento) VALUES ('Departamento Temporário de Validação');
+
+DELETE FROM Departamento WHERE nome_departamento = 'Departamento Temporário de Validação';
