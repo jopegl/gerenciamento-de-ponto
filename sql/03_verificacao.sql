@@ -114,7 +114,7 @@ INSERT INTO Hora_Extra (quantidade, id_registro) VALUES (0.00, 1);
 -- RESULTADO ESPERADO: O SGBD deve barrar a inserção com erro de chave duplicada
 -- -----------------------------------------------------------------------------------------------------
 
-INSERT INTO Funcionario (cpf, nome, sexo, email, data_admissao, id_departamento, id_cargo, id_gerente, status_funcionario) VALUES ('33333333333', 'Funcionario CPF Duplicado', 'M', 'email.unico@empresa.com', '2026-10-01', 1, 1, 2, 'ativo');
+INSERT INTO Funcionario (cpf, nome, sexo, email, data_admissao, id_departamento, id_cargo, id_gerente, status_funcionario) VALUES ('10000000001', 'Funcionario CPF Duplicado', 'M', 'email.unico@empresa.com', '2026-10-01', 1, 1, 2, 'ativo');
 
 
 -- -----------------------------------------------------------------------------------------------------
